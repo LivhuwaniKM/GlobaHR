@@ -16,7 +16,10 @@ namespace StaffHR.Extensions
         {
             services.AddDbContext<AppDbContext>(options =>
             {
-                options.UseSqlServer(config.GetConnectionString("StaffManagementDB"), c => c.MigrationsAssembly("SHServices"));
+                options.UseSqlServer(config.GetConnectionString("StaffManagementDB"), c =>
+                {
+                    c.MigrationsAssembly("SHServices");
+                });
             });
 
             services.AddSwaggerGen();
@@ -36,11 +39,11 @@ namespace StaffHR.Extensions
             services.AddMemoryCache();
             services.AddHttpContextAccessor();
 
+            services.AddScoped<IUserService, UserService>();
             services.AddScoped<IEmployeeService, EmployeeService>();
             services.AddScoped<IVehicleService, VehicleService>();
             services.AddScoped<IApartmentService, ApartmentService>();
             services.AddScoped<IAgentService, AgentService>();
-            services.AddScoped<IUserService, UserService>();
 
             services.AddScoped<IResponseHelper, ResponseHelper>();
 

@@ -11,12 +11,12 @@ namespace SHDomain.Data
 {
     public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
     {
+        public DbSet<User> Users { get; set; }
+        public DbSet<Employee> Employees { get; set; }
         public DbSet<Apartment> Apartments { get; set; }
         public DbSet<Vehicle> Vehicles { get; set; }
-        public DbSet<Employee> Employees { get; set; }
-        public DbSet<Audit> Audits { get; set; }
         public DbSet<Agent> Agents { get; set; }
-        public DbSet<User> Users { get; set; }
+        public DbSet<Audit> Audits { get; set; }
         public DbSet<EmployeeTravelHistory> EmployeeTravelHistory { get; set; }
         public DbSet<EmployeeApartmentHistory> EmployeeApartmentHistory { get; set; }
         public DbSet<EmployeeVehicleHistory> EmployeeVehicleHistory { get; set; }
