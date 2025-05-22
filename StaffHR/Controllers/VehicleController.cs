@@ -9,7 +9,7 @@ namespace StaffHR.Controllers
 {
     public class VehicleController(IResponseHelper _responseHelper, IVehicleService _vehicleService) : BaseController
     {
-        [HttpGet("/api/vehicle/get/all")]
+        [HttpGet("/api/vehicle/list")]
         public async Task<ActionResult> GetAllVehicles()
         {
             var response = await _vehicleService.GetAllVehiclesAsync();
@@ -17,10 +17,10 @@ namespace StaffHR.Controllers
             return StatusCode(response.StatusCode, response);
         }
 
-        [HttpPut("/api/vehicle/update/{vehicleId}")]
-        public async Task<ActionResult> UpdateVehicleAsync(int vehicleId, [FromBody] Vehicle vehicle)
+        [HttpPut("/api/vehicle/update/{id}")]
+        public async Task<ActionResult> UpdateVehicleAsync(int id, [FromBody] Vehicle vehicle)
         {
-            if (vehicleId <= 0 || vehicle == null || vehicleId != vehicle.Id)
+            if (id <= 0 || vehicle == null || id != vehicle.Id)
             {
                 var error = _responseHelper.CreateResponse<Vehicle>(false, 400, "Invalid request. Null object reference.", null);
                 return StatusCode(error.StatusCode, error);
@@ -47,62 +47,62 @@ namespace StaffHR.Controllers
         }
 
         [Authorize(Roles = "SuperAdministrator")]
-        [HttpPost("/api/vehicle/delete/{vin}")]
-        public async Task<ActionResult> DeleteVehicleAsync(string vin)
+        [HttpPost("/api/vehicle/delete/{id}")]
+        public async Task<ActionResult> DeleteVehicleAsync(string id)
         {
-            var response = await _vehicleService.DeleteVehicleAsync(vin);
+            var response = await _vehicleService.DeleteVehicleAsync(id);
 
             return StatusCode(response.StatusCode, response);
         }
 
-        [HttpPost("/api/vehicle/assign")]
-        public async Task<ActionResult> AssignVehicleAsync(VehicleAssignementModel request)
+        [HttpPost("/api/vehicle/assign-employee")]
+        public async Task<ActionResult> AssignEmployeeToVehicleAsync(VehicleAssignementModel request)
         {
             if (request.EmployeeId < 0 || request.VehicleId < 0)
             {
                 var error = _responseHelper.CreateResponse<Vehicle>(false, 400, "Invalid request. Null object reference", null);
                 return StatusCode(error.StatusCode, error);
             }
-            var response = await _vehicleService.AssignVehicleAsync(request.EmployeeId, request.VehicleId);
+            var response = await _vehicleService.AssignEmployeeToVehicleAsync(request.VehicleId, request.EmployeeId);
 
             return StatusCode(response.StatusCode, response);
         }
 
-        [HttpPost("/api/vehicle/unassign")]
-        public async Task<ActionResult> UnassignVehicleAsync(VehicleAssignementModel request)
+        [HttpPost("/api/vehicle/unassign-employee")]
+        public async Task<ActionResult> UnassignEmployeeFromVehicleAsync(VehicleAssignementModel request)
         {
             if (request.EmployeeId < 0 || request.VehicleId < 0)
             {
                 var error = _responseHelper.CreateResponse<Vehicle>(false, 400, "Invalid request. Null object reference", null);
                 return StatusCode(error.StatusCode, error);
             }
-            var response = await _vehicleService.UnassignVehicleAsync(request.EmployeeId, request.VehicleId);
+            var response = await _vehicleService.UnassignEmployeeFromVehicleAsync(request.EmployeeId, request.VehicleId);
 
             return StatusCode(response.StatusCode, response);
         }
 
-        [HttpPost("/api/agent/assign")]
-        public async Task<ActionResult> AssignAgentOnVehicleAsync(AgentAssignmentModel request)
+        [HttpPost("/api/vehicle/assign-agent")]
+        public async Task<ActionResult> AssignAgentToVehicleAsync(AgentAssignmentModel request)
         {
             if (request.AgentId < 0 || request.VehicleId < 0)
             {
                 var error = _responseHelper.CreateResponse<Vehicle>(false, 400, "Invalid request. Null object reference", null);
                 return StatusCode(error.StatusCode, error);
             }
-            var response = await _vehicleService.AssignVehicleAsync(request.AgentId, request.VehicleId);
+            var response = await _vehicleService.AssignAgentToVehicleAsync(request.VehicleId, request.AgentId);
 
             return StatusCode(response.StatusCode, response);
         }
 
-        [HttpPost("/api/agent/unassign")]
-        public async Task<ActionResult> UnassignAgentOnVehicleAsync(AgentAssignmentModel request)
+        [HttpPost("/api/vehicle/unassign-agent")]
+        public async Task<ActionResult> UnassignAgentFromVehicleAsync(AgentAssignmentModel request)
         {
             if (request.AgentId < 0 || request.VehicleId < 0)
             {
                 var error = _responseHelper.CreateResponse<Vehicle>(false, 400, "Invalid request. Null object reference", null);
                 return StatusCode(error.StatusCode, error);
             }
-            var response = await _vehicleService.UnassignVehicleAsync(request.AgentId, request.VehicleId);
+            var response = await _vehicleService.UnassignAgentFromVehicleAsync(request.VehicleId, request.AgentId);
 
             return StatusCode(response.StatusCode, response);
         }

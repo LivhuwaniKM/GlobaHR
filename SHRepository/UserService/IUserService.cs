@@ -10,7 +10,7 @@ namespace SHServices.UserService
         Task<ApiResponse<User>> UpdateUserAsync(User user);
         Task<ApiResponse<IEnumerable<UserDto>>> GetAllUsersAsync();
         Task<ApiResponse<UserDto>> SearchUserAsync(UserSearchModel searchModel);
-        Task<ApiResponse<string>> DeleteUserAsync(int userId);
+        Task<ApiResponse<bool>> DeleteUserAsync(int userId);
         Task<ApiResponse<string>> ResetPasswordAsync(ResetPasswordDto passwModel);
     }
 }

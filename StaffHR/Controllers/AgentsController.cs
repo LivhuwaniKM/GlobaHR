@@ -9,7 +9,7 @@ namespace StaffHR.Controllers
 {
     public class AgentsController(IAgentService _agentService, IResponseHelper _responseHelper) : BaseController
     {
-        [HttpGet("/api/agent/all")]
+        [HttpGet("/api/agent/list")]
         public async Task<ActionResult> GetAllAgentsAsync()
         {
             var response = await _agentService.GetAllAgentsAsync();
@@ -17,7 +17,7 @@ namespace StaffHR.Controllers
             return StatusCode(response.StatusCode, response);
         }
 
-        [HttpGet("/api/agent/unassigned/vehicles/list")]
+        [HttpGet("/api/agent/unassigned-vehicles")]
         public async Task<ActionResult> GetAllUnassignedAgentsOnVehiclesAsync()
         {
             var response = await _agentService.GetUnassignedAgentsOnVehiclesAsync();
@@ -25,7 +25,7 @@ namespace StaffHR.Controllers
             return StatusCode(response.StatusCode, response);
         }
 
-        [HttpGet("/api/agent/unassigned/apartments/list")]
+        [HttpGet("/api/agent/unassigned-apartments")]
         public async Task<ActionResult> GetAllUnassignedAgentsOnApartmentsAsync()
         {
             var response = await _agentService.GetUnassignedAgentsOnApartmentsAsync();

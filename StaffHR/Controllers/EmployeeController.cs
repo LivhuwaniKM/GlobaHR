@@ -8,7 +8,7 @@ namespace StaffHR.Controllers
 {
     public class EmployeeController(IEmployeeService _employeeService, IResponseHelper _responseHelper) : BaseController
     {
-        [HttpGet("/api/employee/get/all")]
+        [HttpGet("/api/employee/list")]
         public async Task<ActionResult> GetAllEmployeesAsync()
         {
             var response = await _employeeService.GetAllEmployeesAsync();
@@ -54,7 +54,7 @@ namespace StaffHR.Controllers
             return StatusCode(response.StatusCode, response);
         }
 
-        [HttpGet("/api/employee/history/apartment/{id}")]
+        [HttpGet("/api/employee/apartment-history/{id}")]
         public async Task<ActionResult> GetEmployeeApartmentHistory(int id)
         {
             var response = await _employeeService.GetEmployeeApartmentHistory(id);
@@ -62,7 +62,7 @@ namespace StaffHR.Controllers
             return StatusCode(response.StatusCode, response);
         }
 
-        [HttpGet("/api/employee/history/vehicle/{id}")]
+        [HttpGet("/api/employee/vehicle-history/{id}")]
         public async Task<ActionResult> GetEmployeeVehicleHistory(int id)
         {
             var response = await _employeeService.GetEmployeeVehicleHistory(id);
@@ -70,7 +70,7 @@ namespace StaffHR.Controllers
             return StatusCode(response.StatusCode, response);
         }
 
-        [HttpGet("/api/employee/history/travel/{id}")]
+        [HttpGet("/api/employee/travel-history/{id}")]
         public async Task<ActionResult> GetEmployeeTravelHistory(int id)
         {
             var response = await _employeeService.GetEmployeeTravelHistory(id);

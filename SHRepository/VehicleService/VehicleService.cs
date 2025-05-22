@@ -8,15 +8,9 @@ using SHDomain.Models.Vehicle;
 
 namespace SHServices.VehicleService
 {
-    public class VehicleService(IResponseHelper responseHelper, AppDbContext db, ILogger<VehicleService> logger) : IVehicleService
+    public class VehicleService(IResponseHelper _responseHelper, AppDbContext _db, ILogger<VehicleService> _logger) : IVehicleService
     {
-        #region Fields
-
-        private readonly IResponseHelper _responseHelper = responseHelper;
-        private readonly AppDbContext _db = db;
-        private readonly ILogger<VehicleService> _logger = logger;
-
-        #endregion
+        #region START: CRUD Operations
 
         public async Task<ApiResponse<IEnumerable<Vehicle>>> GetAllVehiclesAsync()
         {
@@ -127,7 +121,7 @@ namespace SHServices.VehicleService
             }
         }
 
-        public async Task<ApiResponse<string>> DeleteVehicleAsync(string vin)
+        public async Task<ApiResponse<bool>> DeleteVehicleAsync(string vin)
         {
             try
             {
@@ -137,34 +131,36 @@ namespace SHServices.VehicleService
                 var result = await _db.Vehicles.FirstOrDefaultAsync(v => v.Vin.ToLower() == vin.ToLower());
 
                 if (result == null)
-                    return _responseHelper.CreateResponse<string>(false, 404, "Vehicle not found.", null);
+                    return _responseHelper.CreateResponse(false, 404, "Vehicle not found.", false);
 
                 result.IsDeleted = true;
 
                 _db.Vehicles.Update(result);
                 await _db.SaveChangesAsync();
 
-                return _responseHelper.CreateResponse<string>(true, 200, "Vehicle deleted successfully.", null);
+                return _responseHelper.CreateResponse(true, 200, "Vehicle deleted successfully.", true);
             }
             catch (Exception ex)
             {
-                return _responseHelper.CreateResponse<string>(false, 500, ex.Message, null);
+                return _responseHelper.CreateResponse(false, 500, ex.Message, false);
             }
         }
 
-        public async Task<ApiResponse<Vehicle>> AssignVehicleAsync(int? employeeId, int? vehicleId)
+        #endregion END: CRUD Operations
+
+        #region START: assign/unassign EMPLOYEE to/from vehicle
+
+        public async Task<ApiResponse<Vehicle>> AssignEmployeeToVehicleAsync(int vehicleId, int employeeId)
         {
-            return await UpdateVehicleAssignmentAsync(employeeId, vehicleId, assign: true);
+            return await SetVehicleAssignmentAsync(employeeId, vehicleId, assign: true);
         }
 
-        public async Task<ApiResponse<Vehicle>> UnassignVehicleAsync(int? employeeId, int? vehicleId)
+        public async Task<ApiResponse<Vehicle>> UnassignEmployeeFromVehicleAsync(int vehicleId, int employeeId)
         {
-            return await UpdateVehicleAssignmentAsync(employeeId, vehicleId, assign: false);
+            return await SetVehicleAssignmentAsync(employeeId, vehicleId, assign: false);
         }
 
-        #region Update Vehicle assignment
-
-        private async Task<ApiResponse<Vehicle>> UpdateVehicleAssignmentAsync(int? employeeId, int? vehicleId, bool assign)
+        private async Task<ApiResponse<Vehicle>> SetVehicleAssignmentAsync(int employeeId, int vehicleId, bool assign)
         {
             try
             {
@@ -203,29 +199,54 @@ namespace SHServices.VehicleService
             }
         }
 
-        #endregion
+        #endregion END: assign/unassign EMPLOYEE to/from vehicle
 
 
-        #region Update Agent Assignment
+        #region START: assign/unassign AGENT to/from vehicle
 
-        private async Task<ApiResponse<Vehicle>> UpdateAgentAssignmentAsync(int? employeeId, int? vehicleId, bool assign)
+        public async Task<ApiResponse<Vehicle>> AssignAgentToVehicleAsync(int vehicleId, int agentId)
+        {
+            return await UpdateAgentAssignmentAsync(agentId, vehicleId, assign: true);
+        }
+
+        public async Task<ApiResponse<Vehicle>> UnassignAgentFromVehicleAsync(int vehicleId, int agentId)
+        {
+            return await UpdateAgentAssignmentAsync(agentId, vehicleId, assign: false);
+        }
+
+        private async Task<ApiResponse<Vehicle>> UpdateAgentAssignmentAsync(int agentId, int vehicleId, bool assign)
         {
             try
             {
-                var vehicle = await _db.Vehicles.FirstOrDefaultAsync(c => c.Id == vehicleId);
+                var vehicle = assign
+                    ? await _db.Vehicles.FirstOrDefaultAsync(a => a.Id == vehicleId)
+                    : await _db.Vehicles.FirstOrDefaultAsync(a => a.Id == vehicleId && a.AgentId == agentId);
 
                 if (vehicle == null)
-                    return _responseHelper.CreateResponse<Vehicle>(false, 404, "Vehicle not found", null);
+                    return _responseHelper.CreateResponse<Vehicle>(false, 404,
+                        assign ? "Vehicle not found." : "Vehicle not found.", null);
 
-                var employee = await _db.Employees.FirstOrDefaultAsync(c => c.Id == employeeId);
-
-                vehicle.EmployeeId = assign ? employeeId : null;
-                vehicle.AssignedTo = assign ? $"{employee?.FirstName} {employee?.LastName}" : "";
+                vehicle.AgentId = assign ? agentId : 0;
                 await _db.SaveChangesAsync();
 
-                string message = assign ? "Vehicle assigned successfully" : "Vehicle unassigned successfully";
+                var message = assign ? "Agent assigned successfully." : "Agent unassigned successfully.";
 
                 return _responseHelper.CreateResponse(true, 200, message, vehicle);
+
+                //var vehicle = await _db.Vehicles.FirstOrDefaultAsync(c => c.Id == vehicleId);
+
+                //if (vehicle == null)
+                //    return _responseHelper.CreateResponse<Vehicle>(false, 404, "Vehicle not found", null);
+
+                //var employee = await _db.Employees.FirstOrDefaultAsync(c => c.Id == employeeId);
+
+                //vehicle.EmployeeId = assign ? employeeId : null;
+                //vehicle.AssignedTo = assign ? $"{employee?.FirstName} {employee?.LastName}" : "";
+                //await _db.SaveChangesAsync();
+
+                //string message = assign ? "Vehicle assigned successfully" : "Vehicle unassigned successfully";
+
+                //return _responseHelper.CreateResponse(true, 200, message, vehicle);
             }
             catch (Exception ex)
             {
@@ -320,16 +341,6 @@ namespace SHServices.VehicleService
                 _db.Audits.AddRange(changes);
                 await _db.SaveChangesAsync();
             }
-        }
-
-        public Task<ApiResponse<Vehicle>> AssignAgentOnVehicleAsync(int? employeeId, int? agentId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ApiResponse<Vehicle>> UnassignAgentVehicleAsync(int? employeeId, int? agentId)
-        {
-            throw new NotImplementedException();
         }
     }
 }

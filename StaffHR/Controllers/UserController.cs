@@ -48,7 +48,7 @@ namespace StaffHR.Controllers
             return StatusCode(response.StatusCode, response);
         }
 
-        [HttpGet("/api/user/get/all")]
+        [HttpGet("/api/user/list")]
         public async Task<ActionResult> GetAllUsersAsync()
         {
             var response = await _userService.GetAllUsersAsync();
