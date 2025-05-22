@@ -17,7 +17,7 @@ namespace SHServices.AgentService
 
                 return (agents != null)
                     ? _responseHelper.CreateResponse(true, 200, "Agents retrieved successfully.", agents)
-                    : _responseHelper.CreateResponse<List<Agent>>(false, 404, "No agents found.", null);
+                    : _responseHelper.CreateResponse<List<Agent>>(false, 404, "No agents found.", []);
             }
             catch (Exception ex)
             {
