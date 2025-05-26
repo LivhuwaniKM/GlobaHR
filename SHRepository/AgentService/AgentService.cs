@@ -9,20 +9,20 @@ namespace SHServices.AgentService
 {
     public class AgentService(IResponseHelper _responseHelper, AppDbContext _db, ILogger<AgentService> _logger) : IAgentService
     {
-        public async Task<ApiResponse<IEnumerable<Agent>>> GetAllAgentsAsync()
+        public async Task<ApiResponse<List<Agent>>> GetAllAgentsAsync()
         {
             try
             {
                 var agents = await _db.Agents.Where(a => a.IsDeleted == false).ToListAsync();
 
                 return (agents != null)
-                    ? _responseHelper.CreateResponse<IEnumerable<Agent>>(true, 200, "Agents retrieved successfully.", agents)
-                    : _responseHelper.CreateResponse<IEnumerable<Agent>>(false, 404, "No agents found.", null);
+                    ? _responseHelper.CreateResponse(true, 200, "Agents retrieved successfully.", agents)
+                    : _responseHelper.CreateResponse<List<Agent>>(false, 404, "No agents found.", []);
             }
             catch (Exception ex)
             {
                 _logger.LogError(message: ex.Message, ex);
-                return _responseHelper.CreateResponse<IEnumerable<Agent>>(false, 500, ex.Message, null);
+                return _responseHelper.CreateResponse<List<Agent>>(false, 500, ex.Message, null);
             }
         }
 

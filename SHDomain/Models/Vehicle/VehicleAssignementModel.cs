@@ -2,7 +2,7 @@
 {
     public class VehicleAssignementModel
     {
-        public int? VehicleId { get; set; }
-        public int? EmployeeId { get; set; }
+        public int VehicleId { get; set; }
+        public int EmployeeId { get; set; }
     }
 }

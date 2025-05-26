@@ -8,7 +8,7 @@ namespace StaffHR.Controllers
 {
     public class ApartmentController(IResponseHelper _responseHelper, IApartmentService _apartmentService) : BaseController
     {
-        [HttpGet("/api/apartment/get/all")]
+        [HttpGet("/api/apartment/list")]
         public async Task<ActionResult> GetAllApartmentsAsync()
         {
             var response = await _apartmentService.GetAllApartmentsAsync();
@@ -24,10 +24,10 @@ namespace StaffHR.Controllers
             return StatusCode(response.StatusCode, response);
         }
 
-        [HttpPut("/api/apartment/update/{apartmentId}")]
-        public async Task<ActionResult> UpdateApartmentAsync(int apartmentId, [FromBody] Apartment apartment)
+        [HttpPut("/api/apartment/update/{id}")]
+        public async Task<ActionResult> UpdateApartmentAsync(int id, [FromBody] Apartment apartment)
         {
-            if (apartment == null || apartmentId != apartment.Id)
+            if (apartment == null || id != apartment.Id)
             {
                 var err = _responseHelper.CreateResponse<Apartment>(false, 400, "Invalid request. Null object reference", null);
                 return StatusCode(err.StatusCode, err);
@@ -46,10 +46,10 @@ namespace StaffHR.Controllers
         }
 
         [Authorize(Roles = "SuperAdministrator")]
-        [HttpPost("/api/apartment/delete/{apartmentId}")]
-        public async Task<ActionResult> DeleteApartmentAsync(int apartmentId)
+        [HttpPost("/api/apartment/delete/{id}")]
+        public async Task<ActionResult> DeleteApartmentAsync(int id)
         {
-            var response = await _apartmentService.DeleteApartmentByIdAsync(apartmentId);
+            var response = await _apartmentService.DeleteApartmentByIdAsync(id);
 
             return StatusCode(response.StatusCode, response);
         }
@@ -62,8 +62,8 @@ namespace StaffHR.Controllers
                 var err = _responseHelper.CreateResponse<Apartment>(false, 400, "Invalid request. Null object reference", null);
                 return StatusCode(err.StatusCode, err);
             }
-
             var response = await _apartmentService.AssignEmployeeToApartmentAsync(request.ApartmentId, request.EmployeeId);
+
             return StatusCode(response.StatusCode, response);
         }
 
@@ -75,8 +75,8 @@ namespace StaffHR.Controllers
                 var err = _responseHelper.CreateResponse<Apartment>(false, 400, "Invalid request. Null object reference", null);
                 return StatusCode(err.StatusCode, err);
             }
-
             var response = await _apartmentService.UnassignEmployeeFromApartmentAsync(request.ApartmentId, request.EmployeeId);
+
             return StatusCode(response.StatusCode, response);
         }
 
@@ -88,8 +88,8 @@ namespace StaffHR.Controllers
                 var err = _responseHelper.CreateResponse<Apartment>(false, 400, "Invalid apartment or agent ID.", null);
                 return StatusCode(err.StatusCode, err);
             }
-
             var response = await _apartmentService.AssignAgentToApartmentAsync(apartmentId, agentId);
+
             return StatusCode(response.StatusCode, response);
         }
 
@@ -101,8 +101,8 @@ namespace StaffHR.Controllers
                 var err = _responseHelper.CreateResponse<Apartment>(false, 400, "Invalid apartment or agent ID.", null);
                 return StatusCode(err.StatusCode, err);
             }
-
             var response = await _apartmentService.UnassignAgentFromApartmentAsync(apartmentId, agentId);
+
             return StatusCode(response.StatusCode, response);
         }
     }

@@ -10,6 +10,7 @@ namespace SHServices.ApartmentService
     public class ApartmentService(IResponseHelper _responseHelper, AppDbContext _db, ILogger<ApartmentService> _logger) : IApartmentService
     {
         #region START: Apartment CRUD Operations
+
         public async Task<ApiResponse<IEnumerable<Apartment>>> GetAllApartmentsAsync()
         {
             try
@@ -56,10 +57,9 @@ namespace SHServices.ApartmentService
             try
             {
                 var response = await _db.Apartments.FirstOrDefaultAsync(prop => prop.Id == apartment.Id);
+
                 if (response == null)
-                {
                     return _responseHelper.CreateResponse<Apartment>(false, 404, "Apartment not found.", null);
-                }
 
                 await AuditApartment(response, apartment);
 
@@ -99,12 +99,12 @@ namespace SHServices.ApartmentService
             }
         }
 
-        public async Task<ApiResponse<string>> DeleteApartmentByIdAsync(int apartmentId)
+        public async Task<ApiResponse<bool>> DeleteApartmentByIdAsync(int apartmentId)
         {
             try
             {
                 if (apartmentId <= 0)
-                    return _responseHelper.CreateResponse<string>(false, 400, "Invalid request. Null object referenece", null);
+                    return _responseHelper.CreateResponse<bool>(false, 400, "Invalid request. Null object referenece", false);
 
                 var response = (from ap in _db.Apartments where ap.Id == apartmentId select ap).Single();
 
@@ -115,20 +115,21 @@ namespace SHServices.ApartmentService
                     _db.Apartments.Update(response);
                     await _db.SaveChangesAsync();
 
-                    return _responseHelper.CreateResponse<string>(true, 200, "Apartment deleted successfully.", null);
+                    return _responseHelper.CreateResponse<bool>(true, 200, "Apartment deleted successfully.", true);
                 }
-                return _responseHelper.CreateResponse<string>(false, 404, "Apartment not found.", null);
+                return _responseHelper.CreateResponse<bool>(false, 404, "Apartment not found.", false);
             }
             catch (Exception ex)
             {
                 _logger.LogError(message: ex.Message, ex);
-                return _responseHelper.CreateResponse<string>(false, 500, ex.Message, null);
+                return _responseHelper.CreateResponse<bool>(false, 500, ex.Message, false);
             }
         }
 
         #endregion END: Apartment CRUD Operations
 
         #region START: assign/unassign EMPLOYEE to/from apartment
+
         public async Task<ApiResponse<Apartment>> AssignEmployeeToApartmentAsync(int apartmentId, int employeeId)
         {
             return await SetApartmentAssignmentAsync(apartmentId, employeeId, assign: true);
@@ -184,19 +185,28 @@ namespace SHServices.ApartmentService
 
         private async Task<ApiResponse<Apartment>> UpdateAgentAssignmentAsync(int apartmentId, int agentId, bool assign)
         {
-            var apartment = assign
+            try
+            {
+                var apartment = assign
                 ? await _db.Apartments.FirstOrDefaultAsync(a => a.Id == apartmentId)
                 : await _db.Apartments.FirstOrDefaultAsync(a => a.Id == apartmentId && a.AgentId == agentId);
 
-            if (apartment == null)
-                return _responseHelper.CreateResponse<Apartment>(false, 404,
-                    assign ? "Apartment not found." : "Apartment not found or agent not assigned.", null);
+                if (apartment == null)
+                    return _responseHelper.CreateResponse<Apartment>(false, 404,
+                        assign ? "Apartment not found." : "Apartment not found or agent not assigned.", null);
 
-            apartment.AgentId = assign ? agentId : null;
-            await _db.SaveChangesAsync();
+                apartment.AgentId = assign ? agentId : null;
+                await _db.SaveChangesAsync();
 
-            var message = assign ? "Agent assigned successfully." : "Agent unassigned successfully.";
-            return _responseHelper.CreateResponse(true, 200, message, apartment);
+                var message = assign ? "Agent assigned successfully." : "Agent unassigned successfully.";
+
+                return _responseHelper.CreateResponse(true, 200, message, apartment);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(message: ex.Message, ex);
+                return _responseHelper.CreateResponse<Apartment>(false, 500, ex.Message, null);
+            }
         }
 
         #endregion END: assign/unassign AGENT to/from apartment

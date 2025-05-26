@@ -5,7 +5,7 @@ namespace SHServices.AgentService
 {
     public interface IAgentService
     {
-        Task<ApiResponse<IEnumerable<Agent>>> GetAllAgentsAsync();
+        Task<ApiResponse<List<Agent>>> GetAllAgentsAsync();
         Task<ApiResponse<List<Agent>>> GetUnassignedAgentsOnVehiclesAsync();
         Task<ApiResponse<List<Agent>>> GetUnassignedAgentsOnApartmentsAsync();
         Task<ApiResponse<Agent>> SearchAgentAsync(AgentSearchModel searchModel);

@@ -5,6 +5,7 @@ using SHServices.AgentService;
 using SHServices.ApartmentService;
 using SHServices.EmployeeService;
 using SHServices.Mapper;
+using SHServices.MediaService;
 using SHServices.UserService;
 using SHServices.VehicleService;
 
@@ -16,7 +17,10 @@ namespace StaffHR.Extensions
         {
             services.AddDbContext<AppDbContext>(options =>
             {
-                options.UseSqlServer(config.GetConnectionString("StaffManagementDB"), c => c.MigrationsAssembly("SHServices"));
+                options.UseSqlServer(config.GetConnectionString("StaffManagementDB"), c =>
+                {
+                    c.MigrationsAssembly("SHServices");
+                });
             });
 
             services.AddSwaggerGen();
@@ -36,13 +40,15 @@ namespace StaffHR.Extensions
             services.AddMemoryCache();
             services.AddHttpContextAccessor();
 
+            services.AddScoped<IUserService, UserService>();
             services.AddScoped<IEmployeeService, EmployeeService>();
             services.AddScoped<IVehicleService, VehicleService>();
             services.AddScoped<IApartmentService, ApartmentService>();
             services.AddScoped<IAgentService, AgentService>();
-            services.AddScoped<IUserService, UserService>();
 
             services.AddScoped<IResponseHelper, ResponseHelper>();
+
+            services.AddScoped<IMediaService, MediaService>();
 
             services.AddAutoMapper(typeof(AutoMapperProfile));
 

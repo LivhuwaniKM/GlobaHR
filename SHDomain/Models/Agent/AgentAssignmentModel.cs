@@ -2,7 +2,7 @@
 {
     public class AgentAssignmentModel
     {
-        public int? VehicleId { get; set; }
-        public int? AgentId { get; set; }
+        public int VehicleId { get; set; }
+        public int AgentId { get; set; }
     }
 }

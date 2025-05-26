@@ -10,7 +10,7 @@ namespace SHServices.ApartmentService
         Task<ApiResponse<Apartment>> GetApartmentBySearchAsync(ApartmentSearchModel searchModel);
         Task<ApiResponse<Apartment>> CreateApartmentAsync(Apartment apartment);
         Task<ApiResponse<Apartment>> UpdateApartmentAsync(Apartment apartment);
-        Task<ApiResponse<string>> DeleteApartmentByIdAsync(int apartmentId);
+        Task<ApiResponse<bool>> DeleteApartmentByIdAsync(int apartmentId);
 
         /** Employee-Apartment Assignment **/
         Task<ApiResponse<Apartment>> AssignEmployeeToApartmentAsync(int apartmentId, int employeeId);

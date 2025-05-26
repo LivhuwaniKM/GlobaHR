@@ -155,29 +155,29 @@ namespace SHServices.UserService
             }
         }
 
-        public async Task<ApiResponse<string>> DeleteUserAsync(int userId)
+        public async Task<ApiResponse<bool>> DeleteUserAsync(int userId)
         {
             try
             {
                 if (userId <= 0)
-                    return _responseHelper.CreateResponse<string>(false, 400, "Invalid input data.", null);
+                    return _responseHelper.CreateResponse(false, 400, "Invalid input data.", false);
 
                 var user = await _db.Users.FirstOrDefaultAsync(u => u.Id == userId && u.IsDeleted == false);
 
                 if (user == null)
-                    return _responseHelper.CreateResponse<string>(false, 400, "User not found.", null);
+                    return _responseHelper.CreateResponse(false, 400, "User not found.", false);
 
                 user.IsDeleted = true;
 
                 _db.Users.Update(user);
                 await _db.SaveChangesAsync();
 
-                return _responseHelper.CreateResponse<string>(true, 200, "User deleted successfully.", null);
+                return _responseHelper.CreateResponse(true, 200, "User deleted successfully.", true);
             }
             catch (Exception ex)
             {
                 _logger.LogError(message: ex.Message, ex);
-                return _responseHelper.CreateResponse<string>(false, 500, ex.Message, null);
+                return _responseHelper.CreateResponse(false, 500, ex.Message, false);
             }
         }
 
