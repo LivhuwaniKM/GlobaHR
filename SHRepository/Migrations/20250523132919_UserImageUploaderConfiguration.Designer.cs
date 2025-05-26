@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SHDomain.Data;
 
@@ -11,9 +12,11 @@ using SHDomain.Data;
 namespace SHServices.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250523132919_UserImageUploaderConfiguration")]
+    partial class UserImageUploaderConfiguration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -275,9 +278,6 @@ namespace SHServices.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
                     b.HasKey("Id");
 
                     b.ToTable("Media");
@@ -326,7 +326,7 @@ namespace SHServices.Migrations
                             FirstName = "Livhuwani",
                             IsDeleted = false,
                             LastName = "Masindi",
-                            Password = "$2a$11$ZpPVIH8Ry/b1MOXOWyjab.8luI3OzDB8ZVmZv1Evxq3Izl4xJsJ6G",
+                            Password = "$2a$11$E2Mt0eT/MgGKzmxR/yFAXupgkOGIwul7r4TOu/SV/DxVciN9U8Fum",
                             Role = "SuperAdministrator"
                         },
                         new
@@ -336,7 +336,7 @@ namespace SHServices.Migrations
                             FirstName = "John",
                             IsDeleted = false,
                             LastName = "Doe",
-                            Password = "$2a$11$e1K5bnToXz1PM4nuChce4eqhlInSpl4.HOj6YfYH.B4HPAvEwyjAm",
+                            Password = "$2a$11$yM8iMJFqzFZaw7R820Vi8.F0FkwUrL9.DddNlAQWAgO6CKT/ZzEpe",
                             Role = "Administrator"
                         },
                         new
@@ -346,7 +346,7 @@ namespace SHServices.Migrations
                             FirstName = "Alice",
                             IsDeleted = false,
                             LastName = "Johnson",
-                            Password = "$2a$11$d3jo1LFzr4GUk5F/bBlguOdWz606hG6/UMmuCccy/w4Ob7.sEmWqm",
+                            Password = "$2a$11$BU2bb0M0fR0.1hmO9RKy3uojX6W.sOAlBr2bO3Uq09466b4Ja5IaG",
                             Role = "Administrator"
                         });
                 });

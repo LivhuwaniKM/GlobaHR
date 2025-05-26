@@ -5,6 +5,7 @@ using SHServices.AgentService;
 using SHServices.ApartmentService;
 using SHServices.EmployeeService;
 using SHServices.Mapper;
+using SHServices.MediaService;
 using SHServices.UserService;
 using SHServices.VehicleService;
 
@@ -46,6 +47,8 @@ namespace StaffHR.Extensions
             services.AddScoped<IAgentService, AgentService>();
 
             services.AddScoped<IResponseHelper, ResponseHelper>();
+
+            services.AddScoped<IMediaService, MediaService>();
 
             services.AddAutoMapper(typeof(AutoMapperProfile));
 

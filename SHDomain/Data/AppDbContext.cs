@@ -4,6 +4,7 @@ using SHDomain.Models;
 using SHDomain.Models.Agent;
 using SHDomain.Models.Apartment;
 using SHDomain.Models.Employees;
+using SHDomain.Models.Media;
 using SHDomain.Models.User;
 using SHDomain.Models.Vehicle;
 
@@ -20,6 +21,7 @@ namespace SHDomain.Data
         public DbSet<EmployeeTravelHistory> EmployeeTravelHistory { get; set; }
         public DbSet<EmployeeApartmentHistory> EmployeeApartmentHistory { get; set; }
         public DbSet<EmployeeVehicleHistory> EmployeeVehicleHistory { get; set; }
+        public DbSet<Media> Media { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
