@@ -1,6 +1,6 @@
 # GlobalHR
 
-A .NET Web API project for managing employees, apartments, vehicles, employee work history.
+.NET 8 Web API for managing employees, apartments, vehicles, and employee work, travel and asset history.
 
 ## Prerequisites
 
