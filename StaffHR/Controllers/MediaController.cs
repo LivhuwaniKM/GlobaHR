@@ -32,5 +32,23 @@ namespace StaffHR.Controllers
             var response = _mediaService.DeleteImage(employeeId);
             return StatusCode(response.StatusCode, response);
         }
+
+        [HttpGet("list")]
+        public ActionResult<List<ImageFileDto>> GetAllImages()
+        {
+            var images = _mediaService.GetAllImages();
+
+            if (images == null || images.Count == 0)
+                return NotFound("No images found.");
+
+            var imageDtos = images.Select(img => new ImageFileDto
+            {
+                FileName = img.FileName,
+                ContentType = img.ContentType,
+                Base64Data = Convert.ToBase64String(img.FileData),
+            }).ToList();
+
+            return Ok(imageDtos);
+        }
     }
 }

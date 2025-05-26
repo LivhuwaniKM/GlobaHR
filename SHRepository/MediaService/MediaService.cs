@@ -46,5 +46,10 @@ namespace SHServices.MediaService
 
             return _response.CreateResponse(true, 200, "Image deleted successfully.", true);
         }
+
+        public List<Media> GetAllImages()
+        {
+            return [.. _db.Media.Where(c => true && !c.IsDeleted && c.EmployeeId == 2)];
+        }
     }
 }
